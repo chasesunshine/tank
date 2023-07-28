@@ -34,7 +34,7 @@ public class Tank {
         if(group == Group.GOOD){
             String goodFSName = (String)PropertyMgr.get("goodFS");
             try {
-                fs = (FourDirFireStrategy) Class.forName(goodFSName).getDeclaredConstructor().newInstance();
+                fs = (FireStrategy) Class.forName(goodFSName).getDeclaredConstructor().newInstance();
             } catch (Exception e) {
                 e.printStackTrace();
             }
