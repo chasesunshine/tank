@@ -1,20 +1,23 @@
 package com.mashibing.tank;
 
 import java.awt.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
 public class Tank {
-    private int x, y;
-    private Dir dir = Dir.DOWN;
+    int x, y;
+    Dir dir = Dir.DOWN;
     private final static int SPEED = 2;
     public static int WIDTH = ResourceMgr.goodTankU.getWidth();
     public static int HEIGHT = ResourceMgr.goodTankU.getHeight();
     private boolean moving = true;
-    private TankFrame tf = null;
+    TankFrame tf = null;
     private boolean living = true;
     private Random random = new Random();
-    private Group group = Group.BAD;
+    Group group = Group.BAD;
     Rectangle rect = new Rectangle();
+    FireStrategy fs = new FourDirFireStrategy();
 
     public Tank(int x, int y, Dir dir,Group group, TankFrame tf) {
         this.x = x;
@@ -27,6 +30,17 @@ public class Tank {
         rect.y = this.y;
         rect.width = WIDTH;
         rect.height = HEIGHT;
+
+        if(group == Group.GOOD){
+            String goodFSName = (String)PropertyMgr.get("goodFS");
+            try {
+                fs = (FourDirFireStrategy) Class.forName(goodFSName).getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else {
+            fs = new DefaultFireStrategy();
+        }
     }
 
     public Dir getDir() {
@@ -142,11 +156,10 @@ public class Tank {
     }
 
     // 开火
+    // 1. fire(FireStrategy f)每次调用都要new，应该把 DefaultFireStrategy 设置成单例
+    // 2. 把 FireStrategy 设计成 成员变量
     public void fire() {
-        int bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
-        int bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
-
-        tf.bullets.add(new Bullet(bX,bY,this.dir,this.group,this.tf));
+        fs.fire(this);
     }
 
     public void die() {
