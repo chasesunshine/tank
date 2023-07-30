@@ -1,5 +1,7 @@
 package com.mashibing.tank;
 
+import com.mashibing.tank.abstractfactory.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -7,10 +9,13 @@ import java.util.List;
 
 public class TankFrame extends Frame {
 	Tank myTank = new Tank(200,400,Dir.DOWN,Group.GOOD,this);
-	static final int GAME_WIDTH = 1080, GAME_HEIGHT = 960;
-	List<Bullet> bullets = new ArrayList<>();
-	List<Tank> tanks = new ArrayList<>();
-	List<Explode> explodes = new ArrayList<>();
+	public static final int GAME_WIDTH = 1080, GAME_HEIGHT = 960;
+	public List<BaseBullet> bullets = new ArrayList<>();
+	public List<BaseTank> tanks = new ArrayList<>();
+	public List<BaseExplode> explodes = new ArrayList<>();
+	// 初始化工厂
+//	public GameFactory gf = new RectFactory();
+	public GameFactory gf = new DefaultFactory();
 
 	public TankFrame() {
 		setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -62,7 +67,7 @@ public class TankFrame extends Frame {
 		// 画出子弹与坦克碰撞
 		// 每一颗子弹与每一辆坦克碰撞
 		for(int i=0; i<bullets.size(); i++) {
-			for(Tank t : tanks ) {
+			for(BaseTank t : tanks ) {
 				bullets.get(i).collideWith(t);
 			}
 		}

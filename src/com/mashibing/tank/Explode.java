@@ -1,8 +1,10 @@
 package com.mashibing.tank;
 
+import com.mashibing.tank.abstractfactory.BaseExplode;
+
 import java.awt.*;
 
-public class Explode {
+public class Explode extends BaseExplode {
 	public static int WIDTH = ResourceMgr.explodes[0].getWidth();
 	public static int HEIGHT = ResourceMgr.explodes[0].getHeight();
 	private int x, y;
@@ -17,6 +19,7 @@ public class Explode {
 		new Thread(()->new Audio("audio/explode.wav").play()).start();
 	}
 
+	@Override
 	public void paint(Graphics g) {
 		g.drawImage(ResourceMgr.explodes[step++], x, y, null);
 
