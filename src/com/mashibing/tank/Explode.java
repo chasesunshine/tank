@@ -8,11 +8,12 @@ public class Explode {
 	private int x, y;
 	private int step = 0;
 	TankFrame tf = null;
+	GameModel gm = null;
 	
-	public Explode(int x, int y,TankFrame tf) {
+	public Explode(int x, int y,GameModel gm) {
 		this.x = x;
 		this.y = y;
-		this.tf = tf;
+		this.gm = gm;
 
 		new Thread(()->new Audio("audio/explode.wav").play()).start();
 	}
@@ -22,7 +23,7 @@ public class Explode {
 
 		// 爆炸结束之后从list中去除
 		if(step >= ResourceMgr.explodes.length) {
-			tf.explodes.remove(this);
+			gm.explodes.remove(this);
 		}
 	}
 }
