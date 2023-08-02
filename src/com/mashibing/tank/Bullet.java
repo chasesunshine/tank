@@ -2,7 +2,7 @@ package com.mashibing.tank;
 
 import java.awt.*;
 
-public class Bullet {
+public class Bullet extends GameObject{
 	private static final int SPEED = 10;
 	public static int WIDTH = ResourceMgr.bulletD.getWidth();
 	public static int HEIGHT = ResourceMgr.bulletD.getHeight();
@@ -34,12 +34,13 @@ public class Bullet {
 		rect.width = WIDTH;
 		rect.height = HEIGHT;
 
-		gm.bullets.add(this);
+		gm.add(this);
 	}
 
+	@Override
 	public void paint(Graphics g) {
 		if(!living) {
-			gm.bullets.remove(this);
+			gm.remove(this);
 		}
 
 		switch(dir) {
@@ -106,7 +107,7 @@ public class Bullet {
 			int eX = tank.getX() + Tank.WIDTH/2 - Explode.WIDTH/2;
 			int eY = tank.getY() + Tank.HEIGHT/2 - Explode.HEIGHT/2;
 
-			gm.explodes.add(new Explode(eX,eY,gm));
+			gm.add(new Explode(eX,eY,gm));
 		}
 	}
 
