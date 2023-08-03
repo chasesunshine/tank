@@ -46,6 +46,14 @@ public class Tank extends GameObject{
         }
     }
 
+    public Rectangle getRect() {
+        return rect;
+    }
+
+    public void setRect(Rectangle rect) {
+        this.rect = rect;
+    }
+
     public Dir getDir() {
         return dir;
     }
@@ -178,4 +186,7 @@ public class Tank extends GameObject{
         this.living = false;
     }
 
+    public void stop(){
+        moving = false;
+    }
 }

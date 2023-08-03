@@ -86,10 +86,10 @@ public class Bullet extends GameObject{
 		}
 	}
 
-	public void collideWith(Tank tank) {
+	public boolean collideWith(Tank tank) {
 		//这个地方判断碰撞，如果子弹和坦克是一组的，直接返回
 		if(this.group == tank.getGroup()){
-			return;
+			return false;
 		}
 
 		/*
@@ -108,7 +108,9 @@ public class Bullet extends GameObject{
 			int eY = tank.getY() + Tank.HEIGHT/2 - Explode.HEIGHT/2;
 
 			gm.add(new Explode(eX,eY,gm));
+			return true;
 		}
+		return false;
 	}
 
 	private void die() {
