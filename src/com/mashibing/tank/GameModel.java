@@ -8,6 +8,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 既是门面，也是调停者
+ */
 public class GameModel {
 
     Tank myTank = new Tank(200,400,Dir.DOWN,Group.GOOD,this);
