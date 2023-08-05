@@ -14,19 +14,17 @@ public class Tank extends GameObject{
     public static int WIDTH = ResourceMgr.goodTankU.getWidth();
     public static int HEIGHT = ResourceMgr.goodTankU.getHeight();
     private boolean moving = true;
-    TankFrame tf = null;
     private boolean living = true;
     private Random random = new Random();
     public Group group = Group.BAD;
-    Rectangle rect = new Rectangle();
+    public Rectangle rect = new Rectangle();
     FireStrategy fs = new FourDirFireStrategy();
-    public GameModel gm;
+    int oldX, oldY;
 
-    public Tank(int x, int y, Dir dir,Group group, GameModel gm) {
+    public Tank(int x, int y, Dir dir,Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
-        this.gm = gm;
         this.group = group;
 
         rect.x = this.x;
@@ -44,6 +42,8 @@ public class Tank extends GameObject{
         }else {
             fs = new DefaultFireStrategy();
         }
+
+//        GameModel.getInstance().add(this);
     }
 
     public Rectangle getRect() {
@@ -99,7 +99,7 @@ public class Tank extends GameObject{
     @Override
     public void paint(Graphics g) {
         if(!living){
-            gm.remove(this);
+            GameModel.getInstance().remove(this);
         }
 
         switch(dir) {
@@ -120,8 +120,17 @@ public class Tank extends GameObject{
         move();
     }
 
+    public void back() {
+        x = oldX;
+        y = oldY;
+    }
+
     // 移动的时候有 random 几率开火
     private void move() {
+        //记录移动之前的位置
+        oldX = x;
+        oldY = y;
+
         if(!moving){
             return;
         }

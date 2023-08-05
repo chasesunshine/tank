@@ -12,8 +12,9 @@ import java.util.List;
  * 既是门面，也是调停者
  */
 public class GameModel {
+    public final static GameModel INSTANCE = new GameModel();
 
-    Tank myTank = new Tank(200,400,Dir.DOWN,Group.GOOD,this);
+    Tank myTank;
 
     //    List<Bullet> bullets = new ArrayList<>();
 //    List<Tank> tanks = new ArrayList<>();
@@ -21,6 +22,11 @@ public class GameModel {
     ColliderChain colliderChain = new ColliderChain();
 
     private List<GameObject> objects = new ArrayList<>();
+
+    // 饿汉式
+    public static GameModel getInstance(){
+        return INSTANCE;
+    }
 
     public void add(GameObject go){
         this.objects.add(go);
@@ -31,12 +37,21 @@ public class GameModel {
     }
 
     public GameModel(){
+        // 初始化主战坦克
+        myTank = new Tank(200,400,Dir.DOWN,Group.GOOD);
+
         int initTankCount = Integer.parseInt(PropertyMgr.get("initTankCount").toString());
 
         //初始化敌方坦克
         for(int i=0; i<initTankCount; i++) {
-            add(new Tank(50 + i*80, 200, Dir.DOWN , Group.BAD,this));
+            add(new Tank(50 + i*80, 200, Dir.DOWN , Group.BAD));
         }
+
+        // 初始化墙
+        add(new Wall(150, 150, 200, 50));
+        add(new Wall(550, 150, 200, 50));
+        add(new Wall(300, 300, 50, 200));
+        add(new Wall(550, 300, 50, 200));
     }
 
     public void paint(Graphics g) {

@@ -7,12 +7,10 @@ public class Bullet extends GameObject{
 	public static int WIDTH = ResourceMgr.bulletD.getWidth();
 	public static int HEIGHT = ResourceMgr.bulletD.getHeight();
 	private boolean living = true;
-	TankFrame tf = null;
 	private int x, y;
 	private Dir dir;
-	private Group group = Group.BAD;
-	Rectangle rect = new Rectangle();
-	GameModel gm = null;
+	public Group group = Group.BAD;
+	public Rectangle rect = new Rectangle();
 
 	public Group getGroup() {
 		return group;
@@ -22,11 +20,10 @@ public class Bullet extends GameObject{
 		this.group = group;
 	}
 
-	public Bullet(int x, int y, Dir dir, Group group , GameModel gm) {
+	public Bullet(int x, int y, Dir dir, Group group) {
 		this.x = x;
 		this.y = y;
 		this.dir = dir;
-		this.gm = gm;
 		this.group = group;
 
 		rect.x = this.x;
@@ -34,13 +31,13 @@ public class Bullet extends GameObject{
 		rect.width = WIDTH;
 		rect.height = HEIGHT;
 
-		gm.add(this);
+		GameModel.getInstance().add(this);
 	}
 
 	@Override
 	public void paint(Graphics g) {
 		if(!living) {
-			gm.remove(this);
+			GameModel.getInstance().remove(this);
 		}
 
 		switch(dir) {
@@ -86,34 +83,7 @@ public class Bullet extends GameObject{
 		}
 	}
 
-	public boolean collideWith(Tank tank) {
-		//这个地方判断碰撞，如果子弹和坦克是一组的，直接返回
-		if(this.group == tank.getGroup()){
-			return false;
-		}
-
-		/*
-			// 获取子弹
-			Rectangle rect1 = new Rectangle(this.x, this.y, WIDTH, HEIGHT);
-			// 获取坦克
-			Rectangle rect2 = new Rectangle(tank.getX(), tank.getY(), Tank.WIDTH, Tank.HEIGHT);
-		*/
-
-		// 子弹遇到坦克，子弹和坦克都消失
-		if(rect.intersects(tank.rect)){
-			tank.die();
-			this.die();
-
-			int eX = tank.getX() + Tank.WIDTH/2 - Explode.WIDTH/2;
-			int eY = tank.getY() + Tank.HEIGHT/2 - Explode.HEIGHT/2;
-
-			gm.add(new Explode(eX,eY,gm));
-			return true;
-		}
-		return false;
-	}
-
-	private void die() {
+	public void die() {
 		this.living =false;
 	}
 }
