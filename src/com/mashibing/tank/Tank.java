@@ -12,7 +12,6 @@ public class Tank extends GameObject{
     public static int WIDTH = ResourceMgr.goodTankU.getWidth();
     public static int HEIGHT = ResourceMgr.goodTankU.getHeight();
     public Rectangle rect = new Rectangle();
-    public int x, y;
     public Dir dir = Dir.DOWN;
     private boolean moving = true;
     private boolean living = true;

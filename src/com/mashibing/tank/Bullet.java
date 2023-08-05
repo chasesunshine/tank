@@ -10,7 +10,6 @@ public class Bullet extends GameObject{
 	private Dir dir;
 	private boolean living = true;
 	public Group group = Group.BAD;
-	private int x, y;
 
 	public Bullet(int x, int y, Dir dir, Group group) {
 		this.x = x;
