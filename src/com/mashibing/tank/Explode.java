@@ -13,7 +13,6 @@ public class Explode extends GameObject{
 		this.y = y;
 
 		new Thread(()->new Audio("audio/explode.wav").play()).start();
-
 		GameModel.getInstance().add(this);
 	}
 
@@ -25,5 +24,15 @@ public class Explode extends GameObject{
 		if(step >= ResourceMgr.explodes.length) {
 			GameModel.getInstance().remove(this);
 		}
+	}
+
+	@Override
+	public int getWidth() {
+		return WIDTH;
+	}
+
+	@Override
+	public int getHeight() {
+		return HEIGHT;
 	}
 }

@@ -8,42 +8,77 @@ import java.awt.*;
 import java.util.Random;
 
 public class Tank extends GameObject{
-    public int x, y;
-    public Dir dir = Dir.DOWN;
     private final static int SPEED = 2;
     public static int WIDTH = ResourceMgr.goodTankU.getWidth();
     public static int HEIGHT = ResourceMgr.goodTankU.getHeight();
+    public Rectangle rect = new Rectangle();
+    public int x, y;
+    public Dir dir = Dir.DOWN;
     private boolean moving = true;
     private boolean living = true;
     private Random random = new Random();
     public Group group = Group.BAD;
-    public Rectangle rect = new Rectangle();
     FireStrategy fs = new FourDirFireStrategy();
     int oldX, oldY;
 
     public Tank(int x, int y, Dir dir,Group group) {
+        super();
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
+
 
         rect.x = this.x;
         rect.y = this.y;
         rect.width = WIDTH;
         rect.height = HEIGHT;
 
-        if(group == Group.GOOD){
-            String goodFSName = (String)PropertyMgr.get("goodFS");
+        if (group == Group.GOOD) {
+            String goodFSName = (String) PropertyMgr.get("goodFS");
+
             try {
                 fs = (FireStrategy) Class.forName(goodFSName).getDeclaredConstructor().newInstance();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else {
+
+        } else {
             fs = new DefaultFireStrategy();
         }
 
-//        GameModel.getInstance().add(this);
+        GameModel.getInstance().add(this);
+    }
+
+    private void boundsCheck() {
+        if (this.x < 2) {
+            x = 2;
+        }
+        if (this.y < 28) {
+            y = 28;
+        }
+        if (this.x > TankFrame.GAME_WIDTH- Tank.WIDTH -2) {
+            x = TankFrame.GAME_WIDTH - Tank.WIDTH -2;
+        }
+        if (this.y > TankFrame.GAME_HEIGHT - Tank.HEIGHT -2 ) {
+            y = TankFrame.GAME_HEIGHT -Tank.HEIGHT -2;
+        }
+    }
+
+    public void die() {
+        this.living = false;
+    }
+
+    // 开火
+    // 1. fire(FireStrategy f)每次调用都要new，应该把 DefaultFireStrategy 设置成单例
+    // 2. 把 FireStrategy 设计成 成员变量
+    public void fire() {
+        fs.fire(this);
+    }
+
+    public void back() {
+        x = oldX;
+        y = oldY;
     }
 
     public Rectangle getRect() {
@@ -94,35 +129,29 @@ public class Tank extends GameObject{
         this.group = group;
     }
 
-
-
     @Override
     public void paint(Graphics g) {
-        if(!living){
+        if (!living) {
             GameModel.getInstance().remove(this);
         }
 
-        switch(dir) {
+        switch (dir) {
             case LEFT:
-                g.drawImage(this.group == Group.GOOD? ResourceMgr.goodTankL : ResourceMgr.badTankL, x, y, null);
+                g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankL : ResourceMgr.badTankL, x, y, null);
                 break;
             case UP:
-                g.drawImage(this.group == Group.GOOD? ResourceMgr.goodTankU : ResourceMgr.badTankU, x, y, null);
+                g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankU : ResourceMgr.badTankU, x, y, null);
                 break;
             case RIGHT:
-                g.drawImage(this.group == Group.GOOD? ResourceMgr.goodTankR : ResourceMgr.badTankR, x, y, null);
+                g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankR : ResourceMgr.badTankR, x, y, null);
                 break;
             case DOWN:
-                g.drawImage(this.group == Group.GOOD? ResourceMgr.goodTankD : ResourceMgr.badTankD, x, y, null);
+                g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankD : ResourceMgr.badTankD, x, y, null);
                 break;
         }
 
         move();
-    }
 
-    public void back() {
-        x = oldX;
-        y = oldY;
     }
 
     // 移动的时候有 random 几率开火
@@ -131,9 +160,10 @@ public class Tank extends GameObject{
         oldX = x;
         oldY = y;
 
-        if(!moving){
+        if (!moving) {
             return;
         }
+
         switch (dir) {
             case LEFT:
                 x -= SPEED;
@@ -149,50 +179,33 @@ public class Tank extends GameObject{
                 break;
         }
 
-        //update rect
-        rect.x = this.x;
-        rect.y = this.y;
-
-        if(this.group == Group.BAD && random.nextInt(100) > 95) {
+        if (this.group == Group.BAD && random.nextInt(100) > 95) {
             this.fire();
         }
-        // 敌方坦克随机移动，己方坦克不随机移动
-        if(this.group == Group.BAD && random.nextInt(100) > 95) {
+
+        if (this.group == Group.BAD && random.nextInt(100) > 95) {
             randomDir();
         }
 
-        // 边界检测
         boundsCheck();
+        // update rect
+        rect.x = this.x;
+        rect.y = this.y;
     }
 
-    private void boundsCheck() {
-        if (this.x < 2) {
-            x = 2;
-        }
-        if (this.y < 28) {
-            y = 28;
-        }
-        if (this.x > TankFrame.GAME_WIDTH- Tank.WIDTH -2) {
-            x = TankFrame.GAME_WIDTH - Tank.WIDTH -2;
-        }
-        if (this.y > TankFrame.GAME_HEIGHT - Tank.HEIGHT -2 ) {
-            y = TankFrame.GAME_HEIGHT -Tank.HEIGHT -2;
-        }
-    }
 
     private void randomDir() {
         this.dir = Dir.values()[random.nextInt(4)];
     }
 
-    // 开火
-    // 1. fire(FireStrategy f)每次调用都要new，应该把 DefaultFireStrategy 设置成单例
-    // 2. 把 FireStrategy 设计成 成员变量
-    public void fire() {
-        fs.fire(this);
+    @Override
+    public int getWidth() {
+        return WIDTH;
     }
 
-    public void die() {
-        this.living = false;
+    @Override
+    public int getHeight() {
+        return HEIGHT;
     }
 
     public void stop(){
