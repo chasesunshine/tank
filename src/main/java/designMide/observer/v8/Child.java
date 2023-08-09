@@ -16,6 +16,7 @@ public class Child {
         Observers.add(new Dad());
         Observers.add(new Mum());
         Observers.add(new Dog());
+        Observers.add((e)-> System.out.println("ppp"));
     }
 
     public boolean isCry(){
