@@ -1,4 +1,4 @@
-package designMide.observer.v7;
+package designMide.observer.v8;
 
 
 import java.util.ArrayList;
@@ -31,13 +31,8 @@ public class Child {
         }
     }
 
-    // 我们可以有很多不同的事件，事件本身有很多很多类型
-    abstract class Event<T>{
-        abstract T getSource();
-    }
-
     // 事件类
-    class WakeUpEvent extends Event<Child>{
+    class WakeUpEvent{
         long timeStamp;
         String loc;
         Child source;
@@ -46,11 +41,6 @@ public class Child {
             this.timeStamp = timeStamp;
             this.loc = loc;
             this.source = source;
-        }
-
-        @Override
-        Child getSource() {
-            return source;
         }
     }
 
