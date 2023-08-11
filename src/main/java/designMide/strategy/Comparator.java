@@ -15,6 +15,7 @@ public interface Comparator<T> {
     default void m(){
         System.out.printf("m");
     }
+
     public static void test(){
         System.out.println("我是StaticMethod接口中的静态方法！");
     }
