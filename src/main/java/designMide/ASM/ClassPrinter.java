@@ -43,7 +43,6 @@ public class ClassPrinter extends ClassVisitor {
         ClassReader cr = new ClassReader(
                 ClassPrinter.class.getClassLoader().getResourceAsStream("com/mashibing/dp/ASM/T1.class"));
 
-
         cr.accept(cp, 0);
     }
 }
