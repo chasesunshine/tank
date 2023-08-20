@@ -10,6 +10,7 @@ import java.io.IOException;
 import static org.objectweb.asm.Opcodes.ASM4;
 
 public class ClassPrinter extends ClassVisitor {
+
     public ClassPrinter() {
         super(ASM4);
     }
