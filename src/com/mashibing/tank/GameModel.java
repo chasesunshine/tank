@@ -103,4 +103,19 @@ public class GameModel {
             e.printStackTrace();
         }
     }
+
+    public void load() {
+        File f = new File("c:/mashibing/tank.data");
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
+            myTank = (Tank) ois.readObject();
+            objects = (List) ois.readObject();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }
