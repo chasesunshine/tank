@@ -3,6 +3,7 @@ package com.mashibing.tank;
 import com.mashibing.tank.cor.ColliderChain;
 
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,5 +89,18 @@ public class GameModel {
 
     public Tank getMainTank() {
         return myTank;
+    }
+
+    public void save(){
+        File f = new File("c:/mashibing/tank.data");
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
+            oos.writeObject(myTank);
+            oos.writeObject(objects);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
