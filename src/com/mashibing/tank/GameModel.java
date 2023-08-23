@@ -93,14 +93,24 @@ public class GameModel {
 
     public void save(){
         File f = new File("c:/mashibing/tank.data");
+
+        ObjectOutputStream oos = null;
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
+            oos = new ObjectOutputStream(new FileOutputStream(f));
             oos.writeObject(myTank);
             oos.writeObject(objects);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            if(oos != null ){
+                try {
+                    oos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
