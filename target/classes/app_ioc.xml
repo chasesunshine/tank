@@ -10,7 +10,7 @@
     <bean id="d" class="designMide.ioc.Driver"/>
     <bean id="tank" class="designMide.ioc.Tank">
         <!--这里就是 DI （dependence injection）-->
-        <!--<property name="driver" ref="d"></property>-->
+        <property name="driver" ref="d"></property>
     </bean>
 
 </beans>
