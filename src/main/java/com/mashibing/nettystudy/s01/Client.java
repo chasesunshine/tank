@@ -33,6 +33,7 @@ public class Client {
                 }
             });
 
+            // 为了防止  f.addListener 不被调用 - 整个main方法结束的情况 ，所以加 f.sync()
             f.sync();
 
             System.out.println("...");
