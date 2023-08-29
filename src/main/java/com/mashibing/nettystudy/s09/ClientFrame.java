@@ -28,7 +28,6 @@ public class ClientFrame extends Frame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//把字符串发送到服务器
 				c.send(tf.getText());
 				//ta.setText(ta.getText() + tf.getText());
 				tf.setText("");
