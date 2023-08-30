@@ -1,5 +1,5 @@
-client¶Ë½ÓÊÕµ½channelReadºó¸üĞÂ½çÃæ
-°ÑClientFrame×ö³Éµ¥Àı
-ÔÚmainÖĞÏÔÊ¾
+clientç«¯æ¥æ”¶åˆ°channelReadåæ›´æ–°ç•Œé¢
+æŠŠClientFrameåšæˆå•ä¾‹
+åœ¨mainä¸­æ˜¾ç¤º
 
-ClientHandler½ÓÊÕµ½Êı¾İºó¸üĞÂframeÖĞµÄta
+ClientHandleræ¥æ”¶åˆ°æ•°æ®åæ›´æ–°frameä¸­çš„ta
