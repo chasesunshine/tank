@@ -2,6 +2,7 @@ package com.mashibing.tank;
 
 import java.awt.*;
 import java.util.Random;
+import java.util.UUID;
 
 public class Tank {
     private int x, y;
@@ -15,6 +16,8 @@ public class Tank {
     private Random random = new Random();
     private Group group = Group.BAD;
     Rectangle rect = new Rectangle();
+
+    private UUID id = UUID.randomUUID();
 
     public Tank(int x, int y, Dir dir,Group group, TankFrame tf) {
         this.x = x;
@@ -69,7 +72,13 @@ public class Tank {
         this.group = group;
     }
 
+    public UUID getId() {
+        return id;
+    }
 
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public void paint(Graphics g) {
         if(!living){

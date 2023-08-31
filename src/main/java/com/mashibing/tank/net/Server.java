@@ -1,7 +1,6 @@
 package com.mashibing.tank.net;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -31,7 +30,7 @@ public class Server {
 					@Override
 					protected void initChannel(SocketChannel ch) throws Exception {
 						ChannelPipeline pl = ch.pipeline();
-						pl.addLast(new TankMsgDecoder())
+						pl.addLast(new TankJoinMsgDecoder())
 							.addLast(new ServerChildHandler());
 					}
 				})
@@ -63,7 +62,7 @@ class ServerChildHandler extends ChannelInboundHandlerAdapter { //SimpleChannleI
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		System.out.println("channelRead");
 		try {
-			TankMsg tm = (TankMsg)msg;
+			TankJoinMsg tm = (TankJoinMsg)msg;
 		
 			System.out.println(tm);
 		} finally {
