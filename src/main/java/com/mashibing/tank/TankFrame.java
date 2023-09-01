@@ -8,7 +8,8 @@ import java.util.List;
 public class TankFrame extends Frame {
 	public static final TankFrame INSTANCE = new TankFrame();
 
-	Tank myTank = new Tank(200,400,Dir.DOWN,Group.GOOD,this);
+	Random r = new Random();
+	Tank myTank = new Tank(r.nextInt(GAME_WIDTH), r.nextInt(GAME_HEIGHT), Dir.DOWN, Group.GOOD, this);
 	static final int GAME_WIDTH = 1080, GAME_HEIGHT = 960;
 	List<Bullet> bullets = new ArrayList<>();
 	Map<UUID,Tank> tanks = new HashMap<>();
@@ -60,9 +61,8 @@ public class TankFrame extends Frame {
 		}
 
 		// 画出敌方坦克数量
-		for (int i = 0; i < tanks.size(); i++) {
-			tanks.get(i).paint(g);
-		}
+		//java8 stream api
+		tanks.values().stream().forEach(e->e.paint(g));
 
 		// 画出爆炸
 		for (int i = 0; i < explodes.size(); i++) {

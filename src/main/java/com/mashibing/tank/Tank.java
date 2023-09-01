@@ -101,6 +101,12 @@ public class Tank {
             tf.tanks.remove(this);
         }
 
+        Color c = g.getColor();
+        g.setColor(Color.YELLOW);
+        g.drawString(id.toString(), this.x, this.y - 20);
+        g.drawString("live=" + living, x, y-10);
+        g.setColor(c);
+
         switch(dir) {
             case LEFT:
                 g.drawImage(this.group == Group.GOOD? ResourceMgr.goodTankL : ResourceMgr.badTankL, x, y, null);

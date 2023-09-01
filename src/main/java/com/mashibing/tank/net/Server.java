@@ -17,28 +17,28 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 
 public class Server {
 	public static ChannelGroup clients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-	
+
 	public void serverStart() {
 		EventLoopGroup bossGroup = new NioEventLoopGroup(1);
 		EventLoopGroup workerGroup = new NioEventLoopGroup(2);
-		
+
 		try {
 			ServerBootstrap b = new ServerBootstrap();
 			ChannelFuture f = b.group(bossGroup, workerGroup)
-				.channel(NioServerSocketChannel.class)
-				.childHandler(new ChannelInitializer<SocketChannel>() {
-					@Override
-					protected void initChannel(SocketChannel ch) throws Exception {
-						ChannelPipeline pl = ch.pipeline();
-						pl.addLast(new TankJoinMsgDecoder())
-							.addLast(new ServerChildHandler());
-					}
-				})
-				.bind(8888)
-				.sync();
-			
+					.channel(NioServerSocketChannel.class)
+					.childHandler(new ChannelInitializer<SocketChannel>() {
+						@Override
+						protected void initChannel(SocketChannel ch) throws Exception {
+							ChannelPipeline pl = ch.pipeline();
+							pl.addLast(new TankJoinMsgDecoder())
+									.addLast(new ServerChildHandler());
+						}
+					})
+					.bind(8888)
+					.sync();
+
 			ServerFrame.INSTANCE.updateServerMsg("server started!");
-			
+
 			f.channel().closeFuture().sync(); //close()->ChannelFuture
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -47,12 +47,12 @@ public class Server {
 			bossGroup.shutdownGracefully();
 		}
 	}
-	
+
 
 }
 
 class ServerChildHandler extends ChannelInboundHandlerAdapter { //SimpleChannleInboundHandler Codec
-	
+
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		Server.clients.add(ctx.channel());
@@ -91,8 +91,8 @@ class ServerChildHandler extends ChannelInboundHandlerAdapter { //SimpleChannleI
 		Server.clients.remove(ctx.channel());
 		ctx.close();
 	}
-	
-	
+
+
 }
 
 
