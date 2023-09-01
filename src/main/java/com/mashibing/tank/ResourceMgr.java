@@ -2,7 +2,6 @@ package com.mashibing.tank;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
@@ -15,10 +14,6 @@ public class ResourceMgr {
 
 	static {
 		try {
-			ClassLoader classLoader = ResourceMgr.class.getClassLoader();
-			InputStream resourceAsStream = classLoader.getResourceAsStream("images/0.gif");
-
-
 			goodTankU = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/GoodTank1.png"));
 			goodTankL = ImageUtil.rotateImage(goodTankU, -90);
 			goodTankR = ImageUtil.rotateImage(goodTankU, 90);
