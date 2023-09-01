@@ -3,11 +3,12 @@ package com.mashibing.tank.net;
 import com.mashibing.tank.Dir;
 import com.mashibing.tank.Group;
 import com.mashibing.tank.Tank;
+import com.mashibing.tank.TankFrame;
 
 import java.io.*;
 import java.util.UUID;
 
-public class TankJoinMsg {
+public class TankJoinMsg extends Msg{
 	public int x, y;
 	public Dir dir;
 	public boolean moving;
@@ -61,6 +62,7 @@ public class TankJoinMsg {
 		}
 	}
 
+	@Override
 	public byte[] toBytes() {
 		ByteArrayOutputStream baos = null;
 		DataOutputStream dos = null;
@@ -119,4 +121,16 @@ public class TankJoinMsg {
 		return builder.toString();
 	}
 
+	@Override
+	public void handle() {
+		if(this.id.equals(TankFrame.INSTANCE.getMainTank().getId()) || TankFrame.INSTANCE.findTankByUUID(this.id) != null){
+			return;
+		}
+		System.out.println(this);
+		Tank tank = new Tank(this);
+		TankFrame.INSTANCE.addTank(tank);
+
+		//send a new TankJoinMsg to the new joined tank
+		Client.INSTANCE.send(new TankJoinMsg(TankFrame.INSTANCE.getMainTank()));
+	}
 }
