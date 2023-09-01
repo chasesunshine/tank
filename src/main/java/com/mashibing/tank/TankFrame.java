@@ -2,15 +2,25 @@ package com.mashibing.tank;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 public class TankFrame extends Frame {
+	public static final TankFrame INSTANCE = new TankFrame();
+
 	Tank myTank = new Tank(200,400,Dir.DOWN,Group.GOOD,this);
 	static final int GAME_WIDTH = 1080, GAME_HEIGHT = 960;
 	List<Bullet> bullets = new ArrayList<>();
-	List<Tank> tanks = new ArrayList<>();
+	Map<UUID,Tank> tanks = new HashMap<>();
 	List<Explode> explodes = new ArrayList<>();
+
+	public void addTank(Tank t) {
+		tanks.put(t.getId(), t);
+	}
+
+	public Tank findTankByUUID(UUID id) {
+		return tanks.get(id);
+	}
 
 	public TankFrame() {
 		setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -61,10 +71,11 @@ public class TankFrame extends Frame {
 
 		// 画出子弹与坦克碰撞
 		// 每一颗子弹与每一辆坦克碰撞
+		//collision detect
+		Collection<Tank> values = tanks.values();
 		for(int i=0; i<bullets.size(); i++) {
-			for(Tank t : tanks ) {
+			for(Tank t : values )
 				bullets.get(i).collideWith(t);
-			}
 		}
 
 	}
@@ -167,6 +178,9 @@ public class TankFrame extends Frame {
 		g.drawImage(offScreenImage, 0, 0, null);
 	}
 
+	public Tank getMainTank() {
+		return this.myTank;
+	}
 }
 
 

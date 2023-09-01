@@ -1,15 +1,11 @@
 package com.mashibing.tank.net;
 
+import com.mashibing.tank.Tank;
+import com.mashibing.tank.TankFrame;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -51,7 +47,7 @@ public class Client {
 			group.shutdownGracefully();
 		}
 	}
-	
+
 	public void send(String msg) {
 		ByteBuf buf = Unpooled.copiedBuffer(msg.getBytes());
 		channel.writeAndFlush(buf);
@@ -73,35 +69,30 @@ class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
 		ch.pipeline()
-			.addLast(new TankJoinMsgEncoder())
-			.addLast(new ClientHandler());
+				.addLast(new TankJoinMsgEncoder())
+				.addLast(new TankJoinMsgDecoder())
+				.addLast(new ClientHandler());
 	}
 
 }
 
-class ClientHandler extends ChannelInboundHandlerAdapter {
+class ClientHandler extends SimpleChannelInboundHandler<TankJoinMsg> {
 
 	@Override
-	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		ByteBuf buf = null;
-		try {
-			buf = (ByteBuf) msg;
-			byte[] bytes = new byte[buf.readableBytes()];
-			buf.getBytes(buf.readerIndex(), bytes);
-			String msgAccepted = new String(bytes);
-			//ClientFrame.INSTANCE.updateText(msgAccepted);
-			// System.out.println(buf);
-			// System.out.println(buf.refCnt());
-		} finally {
-			if (buf != null)
-				ReferenceCountUtil.release(buf);
-			// System.out.println(buf.refCnt());
-		}
+	public void channelRead0(ChannelHandlerContext ctx, TankJoinMsg msg) throws Exception {
+//		if(msg.id.equals(TankFrame.INSTANCE.getMainTank().getId()) || TankFrame.INSTANCE.findTankByUUID(msg.id) != null){
+//			return;
+//		}
+		System.out.println(msg);
+//		Tank tank = new Tank(msg);
+//		TankFrame.INSTANCE.addTank(tank);
+//
+//		ctx.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getMainTank()));
 	}
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		ctx.writeAndFlush(new TankJoinMsg(5, 8));
+		ctx.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getMainTank()));
 	}
 
 }

@@ -60,32 +60,25 @@ class ServerChildHandler extends ChannelInboundHandlerAdapter { //SimpleChannleI
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		System.out.println("channelRead");
-		try {
-			TankJoinMsg tm = (TankJoinMsg)msg;
-		
-			System.out.println(tm);
-		} finally {
-			ReferenceCountUtil.release(msg);
-		}
+		Server.clients.writeAndFlush(msg);
+
 		/*ByteBuf buf = null;
 		try {
 			buf = (ByteBuf)msg;
-			
+
 			byte[] bytes = new byte[buf.readableBytes()];
 			buf.getBytes(buf.readerIndex(), bytes);
 			String s = new String(bytes);
-			
+
 			if(s.equals("_bye_")) {
-				System.out.println("�ͻ���Ҫ���˳�");
 				Server.clients.remove(ctx.channel());
 				ctx.close();
 			} else {
 				Server.clients.writeAndFlush(msg);
 			}*/
-			
-			//System.out.println(buf);
-			//System.out.println(buf.refCnt());
+
+		//System.out.println(buf);
+		//System.out.println(buf.refCnt());
 		/*} finally {
 			//if(buf != null && buf) ReferenceCountUtil.release(buf);
 			//System.out.println(buf.refCnt());
@@ -95,7 +88,6 @@ class ServerChildHandler extends ChannelInboundHandlerAdapter { //SimpleChannleI
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 		cause.printStackTrace();
-		//ɾ�������쳣�Ŀͻ���channle�����ر�����
 		Server.clients.remove(ctx.channel());
 		ctx.close();
 	}
