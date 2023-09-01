@@ -30,7 +30,8 @@ public class Server {
 						@Override
 						protected void initChannel(SocketChannel ch) throws Exception {
 							ChannelPipeline pl = ch.pipeline();
-							pl.addLast(new TankJoinMsgDecoder())
+							pl.addLast(new TankJoinMsgEncoder())
+									.addLast(new TankJoinMsgDecoder())
 									.addLast(new ServerChildHandler());
 						}
 					})
