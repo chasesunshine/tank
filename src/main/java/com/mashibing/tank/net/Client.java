@@ -1,15 +1,11 @@
 package com.mashibing.tank.net;
 
-import com.mashibing.tank.Tank;
 import com.mashibing.tank.TankFrame;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.ReferenceCountUtil;
 
 public class Client {
 	public static final Client INSTANCE = new Client();
@@ -22,7 +18,8 @@ public class Client {
 		Bootstrap b = new Bootstrap();
 
 		try {
-			ChannelFuture f = b.group(group).channel(NioSocketChannel.class).handler(new ClientChannelInitializer())
+			ChannelFuture f = b.group(group).channel(NioSocketChannel.class)
+					.handler(new ClientChannelInitializer())
 					.connect("localhost", 8888);
 
 			f.addListener(new ChannelFutureListener() {
@@ -49,7 +46,7 @@ public class Client {
 		}
 	}
 
-	public void send(TankJoinMsg msg) {
+	public void send(Msg msg) {
 		channel.writeAndFlush(msg);
 	}
 
@@ -69,17 +66,17 @@ class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
 		ch.pipeline()
-				.addLast(new TankJoinMsgEncoder())
-				.addLast(new TankJoinMsgDecoder())
+				.addLast(new MsgEncoder())
+				.addLast(new MsgDecoder())
 				.addLast(new ClientHandler());
 	}
 
 }
 
-class ClientHandler extends SimpleChannelInboundHandler<TankJoinMsg> {
+class ClientHandler extends SimpleChannelInboundHandler<Msg> {
 
 	@Override
-	public void channelRead0(ChannelHandlerContext ctx, TankJoinMsg msg) throws Exception {
+	public void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
 		msg.handle();
 	}
 

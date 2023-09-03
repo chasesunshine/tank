@@ -37,6 +37,7 @@ public class TankJoinMsg extends Msg{
 	public TankJoinMsg() {
 	}
 
+	@Override
 	public void parse(byte[] bytes) {
 		DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes));
 		try {
@@ -132,5 +133,11 @@ public class TankJoinMsg extends Msg{
 
 		//send a new TankJoinMsg to the new joined tank
 		Client.INSTANCE.send(new TankJoinMsg(TankFrame.INSTANCE.getMainTank()));
+	}
+
+	@Override
+	public MsgType getMsgType() {
+		// TODO Auto-generated method stub
+		return MsgType.TankJoin;
 	}
 }
