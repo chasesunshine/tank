@@ -1,25 +1,40 @@
 package com.mashibing.tank.net;
 
+import java.util.UUID;
+
+import com.mashibing.tank.Dir;
+import com.mashibing.tank.Group;
+import com.mashibing.tank.Tank;
 import com.mashibing.tank.TankFrame;
+
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class Client {
+
 	public static final Client INSTANCE = new Client();
 	private Channel channel = null;
 
 	private Client() {}
 	public void connect() {
+		// �̳߳�
 		EventLoopGroup group = new NioEventLoopGroup(1);
 
 		Bootstrap b = new Bootstrap();
 
 		try {
-			ChannelFuture f = b.group(group).channel(NioSocketChannel.class)
-					.handler(new ClientChannelInitializer())
+			ChannelFuture f = b.group(group).channel(NioSocketChannel.class).handler(new ClientChannelInitializer())
 					.connect("localhost", 8888);
 
 			f.addListener(new ChannelFutureListener() {
@@ -47,13 +62,14 @@ public class Client {
 	}
 
 	public void send(Msg msg) {
+		System.out.println("SEND:" + msg);
 		channel.writeAndFlush(msg);
 	}
 
 	public void closeConnect() {
-//		this.send("_bye_");
+		/*this.send("_bye_");
 		//channel.close();
-	}
+*/	}
 }
 
 class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
@@ -72,6 +88,7 @@ class ClientHandler extends SimpleChannelInboundHandler<Msg> {
 
 	@Override
 	public void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
+		System.out.println(msg);
 		msg.handle();
 	}
 

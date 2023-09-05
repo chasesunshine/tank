@@ -4,8 +4,12 @@
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/mashibing/tank/Main.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/mashibing/tank/ResourceMgr.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/mashibing/tank/net/BulletNewMsg.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/mashibing/tank/net/MsgType.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/mashibing/tank/net/TankDieMsg.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/mashibing/tank/net/TankDirChangedMsg.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/mashibing/tank/net/TankStartMovingMsg.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/mashibing/tank/net/TankStopMsg.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
     <file url="PROJECT" charset="GBK" />
   </component>

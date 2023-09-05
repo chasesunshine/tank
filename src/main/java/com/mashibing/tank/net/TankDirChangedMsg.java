@@ -13,30 +13,30 @@ import com.mashibing.tank.TankFrame;
 
 
 
-public class TankStartMovingMsg extends Msg {
-
-
+public class TankDirChangedMsg extends Msg {
+	
 	UUID id;
-	int x, y;
-
 	Dir dir;
 
-	public TankStartMovingMsg() {
+	int x, y;
 
+	public TankDirChangedMsg() {
+		
 	}
 
-	public TankStartMovingMsg(UUID id, int x, int y, Dir dir) {
+	public TankDirChangedMsg(Tank t) {
+		this.id = t.getId();
+		this.dir = t.getDir();
+		this.x = t.getX();
+		this.y = t.getY();
+	}
+
+	public TankDirChangedMsg(UUID id, int x, int y , Dir dir) {
+		super();
 		this.id = id;
 		this.x = x;
 		this.y = y;
 		this.dir = dir;
-	}
-
-	public TankStartMovingMsg(Tank tank) {
-		this.id = tank.getId();
-		this.x = tank.getX();
-		this.y = tank.getY();
-		this.dir = tank.getDir();
 	}
 
 	public Dir getDir() {
@@ -49,13 +49,12 @@ public class TankStartMovingMsg extends Msg {
 
 	@Override
 	public MsgType getMsgType() {
-		return MsgType.TankStartMoving;
+		return MsgType.TankDirChanged;
 	}
 
 	public int getX() {
 		return x;
 	}
-
 	public int getY() {
 		return y;
 	}
@@ -70,15 +69,15 @@ public class TankStartMovingMsg extends Msg {
 			t.setMoving(true);
 			t.setX(this.x);
 			t.setY(this.y);
-			t.setDir(dir);
+			t.setDir(this.dir);
 		}
 	}
-
+	
 	@Override
 	public void parse(byte[] bytes) {
 		DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes));
 		try {
-
+			
 			this.id = new UUID(dis.readLong(), dis.readLong());
 			this.x = dis.readInt();
 			this.y = dis.readInt();
@@ -92,9 +91,10 @@ public class TankStartMovingMsg extends Msg {
 				e.printStackTrace();
 			}
 		}
-
+		
+		
 	}
-
+	
 	public void setDir(Dir dir) {
 		this.dir = dir;
 	}
@@ -102,11 +102,11 @@ public class TankStartMovingMsg extends Msg {
 	public void setId(UUID id) {
 		this.id = id;
 	}
-
+	
 	public void setX(int x) {
 		this.x = x;
 	}
-
+	
 	public void setY(int y) {
 		this.y = y;
 	}
@@ -114,7 +114,7 @@ public class TankStartMovingMsg extends Msg {
 	@Override
 	public byte[] toBytes() {
 		ByteArrayOutputStream baos = null;
-		DataOutputStream dos = null;
+		DataOutputStream dos = null; 
 		byte[] bytes = null;
 		try {
 			baos = new ByteArrayOutputStream();
@@ -144,21 +144,23 @@ public class TankStartMovingMsg extends Msg {
 				e.printStackTrace();
 			}
 		}
-
+		
 		return bytes;
 	}
+
+
+
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(this.getClass().getName())
-				.append("[")
-				.append("uuid=" + id + " | ")
-				.append("x=" + x + " | ")
-				.append("y=" + y + " | ")
-				.append("dir=" + dir + " | ")
-				.append("]");
+			   .append("[")
+			   .append("uuid=" + id + " | ")
+			   .append("x=" + x + " | ")
+			   .append("y=" + y + " | ")
+			   .append("dir=" + dir + " | ")
+			   .append("]");
 		return builder.toString();
 	}
-
 }

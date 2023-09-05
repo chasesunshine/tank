@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.mashibing.tank.Dir;
 import com.mashibing.tank.Group;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -13,7 +14,7 @@ public class MsgDecoder extends ByteToMessageDecoder{
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-		if(in.readableBytes() < 8) return;  // TCP 拆包粘包问题
+		if(in.readableBytes() < 8) return;
 
 		in.markReaderIndex();
 
@@ -30,7 +31,7 @@ public class MsgDecoder extends ByteToMessageDecoder{
 
 		Msg msg = null;
 
-		//reflection 反射
+		//reflection
 		msg = (Msg)Class.forName("com.mashibing.tank.net." + msgType.toString() + "Msg").getDeclaredConstructor().newInstance();
 		/*switch(msgType) {
 		case TankJoin:
@@ -49,6 +50,7 @@ public class MsgDecoder extends ByteToMessageDecoder{
 
 		msg.parse(bytes);
 		out.add(msg);
+
 	}
 
 }

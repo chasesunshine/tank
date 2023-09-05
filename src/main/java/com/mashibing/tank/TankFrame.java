@@ -1,23 +1,43 @@
 package com.mashibing.tank;
 
+import java.awt.Color;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.UUID;
+
 import com.mashibing.tank.net.Client;
+import com.mashibing.tank.net.TankDirChangedMsg;
 import com.mashibing.tank.net.TankStartMovingMsg;
 import com.mashibing.tank.net.TankStopMsg;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.util.List;
 
 public class TankFrame extends Frame {
 	public static final TankFrame INSTANCE = new TankFrame();
 
 	Random r = new Random();
+
 	Tank myTank = new Tank(r.nextInt(GAME_WIDTH), r.nextInt(GAME_HEIGHT), Dir.DOWN, Group.GOOD, this);
-	static final int GAME_WIDTH = 1080, GAME_HEIGHT = 960;
 	List<Bullet> bullets = new ArrayList<>();
 	Map<UUID,Tank> tanks = new HashMap<>();
 	List<Explode> explodes = new ArrayList<>();
+
+
+	static final int GAME_WIDTH = 1080, GAME_HEIGHT = 960;
+
+	public void addBullet(Bullet b) {
+		bullets.add(b);
+	}
 
 	public void addTank(Tank t) {
 		tanks.put(t.getId(), t);
@@ -27,54 +47,69 @@ public class TankFrame extends Frame {
 		return tanks.get(id);
 	}
 
-	public TankFrame() {
+	public Bullet findBulletByUUID(UUID id) {
+		for(int i=0; i<bullets.size(); i++) {
+			if(bullets.get(i).getId().equals(id))
+				return bullets.get(i);
+		}
+
+		return null;
+	}
+
+	private TankFrame() {
 		setSize(GAME_WIDTH, GAME_HEIGHT);
 		setResizable(false);
 		setTitle("tank war");
-		setVisible(true);
+		//setVisible(true);
 
-		// 键盘监听器
 		this.addKeyListener(new MyKeyListener());
 
-		//窗口监听器
 		addWindowListener(new WindowAdapter() {
+
 			@Override
-			public void windowClosing(WindowEvent e) {
+			public void windowClosing(WindowEvent e) { // bjmashibing/tank
 				System.exit(0);
 			}
 
 		});
 	}
 
+	Image offScreenImage = null;
+
+	@Override
+	public void update(Graphics g) {
+		if (offScreenImage == null) {
+			offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
+		}
+		Graphics gOffScreen = offScreenImage.getGraphics();
+		Color c = gOffScreen.getColor();
+		gOffScreen.setColor(Color.BLACK);
+		gOffScreen.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+		gOffScreen.setColor(c);
+		paint(gOffScreen);
+		g.drawImage(offScreenImage, 0, 0, null);
+	}
+
 	@Override
 	public void paint(Graphics g) {
-		Color color = g.getColor();
+		Color c = g.getColor();
 		g.setColor(Color.WHITE);
-		g.drawString("子弹的数量："+ bullets.size(),10,60);
-		g.drawString("敌人的数量："+ tanks.size(),10,60);
-		g.drawString("爆炸的数量："+ explodes.size(),10,60);
-		g.setColor(color);
+		g.drawString("bullets:" + bullets.size(), 10, 60);
+		g.drawString("tanks:" + tanks.size(), 10, 80);
+		g.drawString("explodes" + explodes.size(), 10, 100);
+		g.setColor(c);
 
-		// 画出我方坦克
 		myTank.paint(g);
-//		myTank.setMoving(false);
-
-		// 画出子弹数量
 		for (int i = 0; i < bullets.size(); i++) {
 			bullets.get(i).paint(g);
 		}
 
-		// 画出敌方坦克数量
 		//java8 stream api
-		tanks.values().stream().forEach(e->e.paint(g));
+		tanks.values().stream().forEach((e)->e.paint(g));
 
-		// 画出爆炸
 		for (int i = 0; i < explodes.size(); i++) {
 			explodes.get(i).paint(g);
 		}
-
-		// 画出子弹与坦克碰撞
-		// 每一颗子弹与每一辆坦克碰撞
 		//collision detect
 		Collection<Tank> values = tanks.values();
 		for(int i=0; i<bullets.size(); i++) {
@@ -82,9 +117,21 @@ public class TankFrame extends Frame {
 				bullets.get(i).collideWith(t);
 		}
 
+
+
+		// for(Iterator<Bullet> it = bullets.iterator(); it.hasNext();) {
+		// Bullet b = it.next();
+		// if(!b.live) it.remove();
+		// }
+
+		// for(Bullet b : bullets) {
+		// b.paint(g);
+		// }
+
 	}
 
 	class MyKeyListener extends KeyAdapter {
+
 		boolean bL = false;
 		boolean bU = false;
 		boolean bR = false;
@@ -97,21 +144,28 @@ public class TankFrame extends Frame {
 			switch (key) {
 				case KeyEvent.VK_LEFT:
 					bL = true;
+					setMainTankDir();
 					break;
 				case KeyEvent.VK_UP:
 					bU = true;
+					setMainTankDir();
 					break;
 				case KeyEvent.VK_RIGHT:
 					bR = true;
+					setMainTankDir();
 					break;
 				case KeyEvent.VK_DOWN:
 					bD = true;
+					setMainTankDir();
 					break;
+
 				default:
 					break;
 			}
 
-			setMainTankDir();
+
+
+			new Thread(()->new Audio("audio/tank_move.wav").play()).start();
 		}
 
 		@Override
@@ -121,15 +175,19 @@ public class TankFrame extends Frame {
 			switch (key) {
 				case KeyEvent.VK_LEFT:
 					bL = false;
+					setMainTankDir();
 					break;
 				case KeyEvent.VK_UP:
 					bU = false;
+					setMainTankDir();
 					break;
 				case KeyEvent.VK_RIGHT:
 					bR = false;
+					setMainTankDir();
 					break;
 				case KeyEvent.VK_DOWN:
 					bD = false;
+					setMainTankDir();
 					break;
 
 				case KeyEvent.VK_CONTROL:
@@ -140,10 +198,12 @@ public class TankFrame extends Frame {
 					break;
 			}
 
-			setMainTankDir();
+
 		}
 
 		private void setMainTankDir() {
+			//save the old dir
+			Dir dir = myTank.getDir();
 
 			if (!bL && !bU && !bR && !bD) {
 				myTank.setMoving(false);
@@ -159,33 +219,21 @@ public class TankFrame extends Frame {
 				if (bD)
 					myTank.setDir(Dir.DOWN);
 				//发出坦克移动的消息
-				Client.INSTANCE.send(new TankStartMovingMsg(getMainTank()));
+				if(!myTank.isMoving())
+					Client.INSTANCE.send(new TankStartMovingMsg(getMainTank()));
+
+				myTank.setMoving(true);
+
+				if(dir != myTank.getDir()) {
+					Client.INSTANCE.send(new TankDirChangedMsg(myTank));
+				}
 			}
 
-		}
-	}
 
-	// 不用管，双缓冲
-	Image offScreenImage = null;
-	@Override
-	public void update(Graphics g) {
-		if (offScreenImage == null) {
-			offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
 		}
-		Graphics gOffScreen = offScreenImage.getGraphics();
-		Color c = gOffScreen.getColor();
-		gOffScreen.setColor(Color.BLACK);
-		gOffScreen.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-		gOffScreen.setColor(c);
-		paint(gOffScreen);
-		g.drawImage(offScreenImage, 0, 0, null);
 	}
 
 	public Tank getMainTank() {
 		return this.myTank;
 	}
 }
-
-
-
-

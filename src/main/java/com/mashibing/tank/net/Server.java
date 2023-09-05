@@ -29,9 +29,9 @@ public class Server {
 						@Override
 						protected void initChannel(SocketChannel ch) throws Exception {
 							ChannelPipeline pl = ch.pipeline();
-							pl.addLast(new MsgEncoder())
-									.addLast(new MsgDecoder())
-									.addLast(new ServerChildHandler());
+							pl.addLast(new MsgEncoder());
+							pl.addLast(new MsgDecoder());
+							pl.addLast(new ServerChildHandler());
 						}
 					})
 					.bind(8888)
@@ -72,6 +72,7 @@ class ServerChildHandler extends ChannelInboundHandlerAdapter { //SimpleChannleI
 			String s = new String(bytes);
 
 			if(s.equals("_bye_")) {
+				System.out.println("�ͻ���Ҫ���˳�");
 				Server.clients.remove(ctx.channel());
 				ctx.close();
 			} else {
