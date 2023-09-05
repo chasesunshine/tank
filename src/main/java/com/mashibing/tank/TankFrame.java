@@ -2,6 +2,7 @@ package com.mashibing.tank;
 
 import com.mashibing.tank.net.Client;
 import com.mashibing.tank.net.TankStartMovingMsg;
+import com.mashibing.tank.net.TankStopMsg;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -143,11 +144,10 @@ public class TankFrame extends Frame {
 		}
 
 		private void setMainTankDir() {
-			//save the old dir
-			Dir dir = myTank.getDir();
 
 			if (!bL && !bU && !bR && !bD) {
 				myTank.setMoving(false);
+				Client.INSTANCE.send(new TankStopMsg(getMainTank()));
 			} else {
 
 				if (bL)
@@ -160,7 +160,6 @@ public class TankFrame extends Frame {
 					myTank.setDir(Dir.DOWN);
 				//发出坦克移动的消息
 				Client.INSTANCE.send(new TankStartMovingMsg(getMainTank()));
-
 			}
 
 		}

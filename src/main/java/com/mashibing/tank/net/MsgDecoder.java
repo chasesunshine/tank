@@ -15,6 +15,8 @@ public class MsgDecoder extends ByteToMessageDecoder{
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
 		if(in.readableBytes() < 8) return;  // TCP 拆包粘包问题
 
+		in.markReaderIndex();
+
 		MsgType msgType = MsgType.values()[in.readInt()];
 		int length = in.readInt();
 
@@ -28,15 +30,23 @@ public class MsgDecoder extends ByteToMessageDecoder{
 
 		Msg msg = null;
 
-		switch(msgType) {
-			case TankJoin:
-				msg = new TankJoinMsg();
-				break;
-			case TankStartMoving:
-				msg = new TankStartMovingMsg();
-			default:
-				break;
-		}
+		//reflection 反射
+		msg = (Msg)Class.forName("com.mashibing.tank.net." + msgType.toString() + "Msg").getDeclaredConstructor().newInstance();
+		/*switch(msgType) {
+		case TankJoin:
+			msg = new TankJoinMsg();
+			break;
+		case TankStartMoving:
+			msg = new TankStartMovingMsg();
+			break;
+		case TankStop:
+			msg = new TankStopMsg();
+			break;
+		case Tank
+		default:
+			break;
+		}*/
+
 		msg.parse(bytes);
 		out.add(msg);
 	}

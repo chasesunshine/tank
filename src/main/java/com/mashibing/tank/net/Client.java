@@ -50,11 +50,6 @@ public class Client {
 		channel.writeAndFlush(msg);
 	}
 
-	public static void main(String[] args) throws Exception {
-		Client c = new Client();
-		c.connect();
-	}
-
 	public void closeConnect() {
 //		this.send("_bye_");
 		//channel.close();
