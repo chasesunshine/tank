@@ -11,7 +11,7 @@ public class ResourceMgr {
 	public static BufferedImage[] explodes = new BufferedImage[16];
 	static {
 		try {
-			goodTankU = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/goodTank1.png"));
+			goodTankU = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/GoodTank1.png"));
 			goodTankL = ImageUtil.rotateImage(goodTankU, -90);
 			goodTankR = ImageUtil.rotateImage(goodTankU, 90);
 			goodTankD = ImageUtil.rotateImage(goodTankU, 180);
