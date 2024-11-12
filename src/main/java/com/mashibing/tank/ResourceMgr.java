@@ -16,7 +16,7 @@ public class ResourceMgr {
 			goodTankR = ImageUtil.rotateImage(goodTankU, 90);
 			goodTankD = ImageUtil.rotateImage(goodTankU, 180);
 
-			badTankU = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/badTank1.png"));
+			badTankU = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/BadTank1.png"));
 			badTankL = ImageUtil.rotateImage(badTankU, -90);
 			badTankR = ImageUtil.rotateImage(badTankU, 90);
 			badTankD = ImageUtil.rotateImage(badTankU, 180);
